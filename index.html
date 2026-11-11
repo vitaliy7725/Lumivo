@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e293b">
+<title>Lumivo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <header class="sidebar-header">
+      <h1>Lumivo</h1>
+      <button id="newChatBtn" title="Новый контакт">+</button>
+    </header>
+    <div class="tabs">
+      <button class="tab active" data-tab="chats">Чаты</button>
+      <button class="tab" data-tab="statuses">Статусы</button>
+    </div>
+    <div class="tab-content" id="chatsTab">
+      <div class="search"><input type="text" id="searchInput" placeholder="Поиск..."></div>
+      <ul class="chat-list" id="chatList"></ul>
+    </div>
+    <div class="tab-content hidden" id="statusesTab">
+      <div class="my-status-btn" id="addStatusBtn">
+        <div class="add-circle">+</div>
+        <div class="text"><h3>Мой статус</h3><p>Нажмите, чтобы добавить</p></div>
+      </div>
+      <ul class="status-list" id="statusList"></ul>
+    </div>
+  </aside>
+
+  <main class="chat-area" id="chatArea">
+    <div class="empty-state">
+      <div class="empty-icon">💬</div>
+      <h2>Добро пожаловать в Lumivo</h2>
+      <p>Выберите чат, чтобы начать общение</p>
+    </div>
+    <div class="chat-window" id="chatWindow">
+      <header class="chat-header">
+        <button id="backBtn" aria-label="Назад">‹</button>
+        <div class="avatar" id="chatAvatar">?</div>
+        <div class="chat-info">
+          <h2 id="chatName">Имя <span id="officialBadge" class="official-badge" style="display:none;">✔</span></h2>
+          <span class="status" id="chatStatus">в сети</span>
+        </div>
+        <div class="chat-actions">
+          <button class="action-btn" id="audioCallBtn" title="Аудиозвонок"><svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg></button>
+          <button class="action-btn" id="videoCallBtn" title="Видеозвонок"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></button>
+          <button class="action-btn" id="chatMenuBtn" title="Действия"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+      </header>
+      <div class="messages" id="messages"></div>
+      <form class="message-form" id="messageForm">
+        <button type="button" id="attachBtn" title="Прикрепить">📎</button>
+        <input type="file" id="fileInput" style="display: none;" multiple>
+        <input type="text" id="messageInput" placeholder="Сообщение..." autocomplete="off" enterkeyhint="send">
+        <button type="submit" aria-label="Отправить">➤</button>
+      </form>
+      <div class="start-container" id="startContainer"><button id="startBotBtn">🚀 START</button></div>
+    </div>
+  </main>
+</div>
+
+<div class="blocked-overlay" id="blockedOverlay">
+  <div class="blocked-icon">🚫</div>
+  <div class="blocked-title">Вы заблокированы</div>
+  <div class="blocked-reason" id="blockedReasonText">Причина: нарушение правил</div>
+  <button class="blocked-btn" onclick="document.getElementById('blockedOverlay').classList.remove('active'); closeChat();">Вернуться к чатам</button>
+</div>
+
+<div class="context-menu" id="chatMenu">
+  <div class="context-panel">
+    <button id="menuWallpaper">🎨 Обои чата</button>
+    <button id="menuReport">⚠️ Пожаловаться</button>
+    <button id="menuClearMe">🧹 Очистить историю у себя</button>
+    <button id="menuClearAll" class="danger">🔥 Очистить у всех</button>
+    <button id="menuDeleteChat" class="danger">🗑 Удалить чат</button>
+  </div>
+</div>
+
+<div class="modal" id="wallpaperModal">
+  <div class="modal-panel">
+    <h3>Обои чата</h3>
+    <div class="wallpaper-grid">
+      <div class="wallpaper-option" style="background: #0f172a;" data-wall="default"></div>
+      <div class="wallpaper-option" style="background: linear-gradient(135deg, #1e1b4b, #312e81);" data-wall="gradient1"></div>
+      <div class="wallpaper-option" style="background: linear-gradient(135deg, #064e3b, #065f46);" data-wall="gradient2"></div>
+      <div class="wallpaper-option" style="background: linear-gradient(135deg, #4c1d95, #7c3aed);" data-wall="gradient3"></div>
+      <div class="wallpaper-option" style="background: linear-gradient(135deg, #7f1d1d, #b91c1c);" data-wall="gradient4"></div>
+      <div class="wallpaper-option" style="background: linear-gradient(135deg, #134e4a, #0f766e);" data-wall="gradient5"></div>
+      <div class="wallpaper-option wallpaper-custom" id="customWallBtn">
+        <span>📷</span><span>Своё</span>
+      </div>
+    </div>
+    <input type="file" id="wallpaperInput" accept="image/*" style="display: none;">
+    <div class="modal-actions" style="margin-top: 10px;">
+      <button id="cancelWallpaper" class="btn-cancel">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="reportModal">
+  <div class="modal-panel">
+    <h3>Пожаловаться на пользователя</h3>
+    <p style="color: #94a3b8; font-size: 13px;">Выберите причину жалобы. Переписка будет отправлена администратору.</p>
+    <select id="reportReason" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 16px; outline: none;">
+      <option value="Спам и реклама">Спам и реклама</option>
+      <option value="Оскорбления">Оскорбления</option>
+      <option value="Мошенничество">Мошенничество</option>
+      <option value="Неприемлемый контент">Неприемлемый контент</option>
+      <option value="Другое">Другое</option>
+    </select>
+    <div class="modal-actions">
+      <button id="cancelReport" class="btn-cancel">Отмена</button>
+      <button id="submitReport" class="btn-submit" style="background: #ef4444;">Отправить жалобу</button>
+    </div>
+  </div>
+</div>
+
+<div class="status-viewer" id="statusViewer">
+  <div class="status-progress" id="statusProgress"></div>
+  <div class="status-viewer-header"><div class="avatar" id="viewerAvatar">?</div><div class="info"><h3 id="viewerName">Имя</h3><p id="viewerTime">Только что</p></div><button id="closeStatusBtn">✕</button></div>
+  <div class="status-viewer-content" id="statusContent"><div class="status-nav prev" id="navPrev"></div><div class="status-nav next" id="navNext"></div></div>
+  <div class="status-viewers-list" id="statusViewersList"><h4>Просмотрели:</h4><div id="viewersContainer"></div></div>
+</div>
+
+<div class="modal" id="contactModal">
+  <div class="modal-panel">
+    <h3>Новый контакт</h3>
+    <input type="text" id="contactName" placeholder="Имя контакта">
+    <div class="phone-group">
+      <select id="countryCode" class="country-select"><option value="+7">🇷🇺 +7</option><option value="+375">🇧🇾 +375</option></select>
+      <input type="tel" id="contactPhone" placeholder="999 123-45-67" maxlength="18">
+    </div>
+    <div class="modal-actions"><button id="cancelContact" class="btn-cancel">Отмена</button><button id="saveContact" class="btn-submit">Добавить</button></div>
+  </div>
+</div>
+
+<div class="modal" id="statusUploader">
+  <div class="modal-panel">
+    <h3>Новый статус</h3>
+    <div class="uploader-options"><button id="textModeBtn" class="active">📝 Текст</button><button id="imageModeBtn">📷 Фото</button></div>
+    <textarea id="statusText" placeholder="Что у вас нового?"></textarea>
+    <input type="file" id="statusImage" accept="image/*" style="display:none;">
+    <div class="modal-actions"><button id="cancelUpload" class="btn-cancel">Отмена</button><button id="postStatus" class="btn-submit">Опубликовать</button></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
