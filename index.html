@@ -11,7 +11,6 @@
   body { display: flex; -webkit-font-smoothing: antialiased; }
   .app { width: 100%; height: 100%; display: flex; background: #1e293b; overflow: hidden; position: relative; }
   
-  /* ЭКРАН ВХОДА */
   #authScreen { position: fixed; inset: 0; background: #0f172a; z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
   #authScreen h1 { color: #3b82f6; font-size: 32px; font-weight: 800; margin-bottom: 30px; letter-spacing: 2px; }
   .auth-box { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -22,7 +21,6 @@
   .auth-switch { text-align: center; color: #94a3b8; font-size: 14px; margin-top: 15px; cursor: pointer; }
   .hidden { display: none !important; }
 
-  /* САЙДБАР */
   .sidebar { position: absolute; inset: 0; display: flex; flex-direction: column; background: #1e293b; z-index: 2; transition: transform 0.25s ease; }
   .sidebar.hidden-mobile { transform: translateX(-100%); pointer-events: none; }
   .sidebar-header { padding: calc(12px + env(safe-area-inset-top)) 16px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; flex-shrink: 0; }
@@ -39,7 +37,6 @@
   .chat-item-info h3 { font-size: 15px; color: #f1f5f9; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chat-item-info p { font-size: 13px; color: #94a3b8; }
 
-  /* ОКНО ЧАТА */
   .chat-area { position: absolute; inset: 0; display: flex; flex-direction: column; background: #0f172a; z-index: 3; transform: translateX(100%); transition: transform 0.25s ease; }
   .chat-area.active { transform: translateX(0); }
   .chat-window { flex: 1; display: flex; flex-direction: column; min-height: 0; height: 100%; }
@@ -58,7 +55,6 @@
   .message-form input[type="text"] { flex: 1; min-width: 0; padding: 12px 16px; border-radius: 22px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; outline: none; font-size: 16px; }
   .message-form button[type="submit"] { width: 46px; height: 46px; border: none; border-radius: 50%; background: #3b82f6; color: white; font-size: 18px; cursor: pointer; }
 
-  /* МОДАЛКА */
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 150; display: none; align-items: flex-end; }
   .modal.active { display: flex; }
   .modal-panel { width: 100%; background: #1e293b; border-radius: 20px 20px 0 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
@@ -125,14 +121,14 @@
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
   import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, onSnapshot, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-  // ВСТАВЛЕНЫ КЛЮЧИ ИЗ ТВОЕГО СКРИНШОТА
+  // ВСТАВЛЕНЫ НОВЫЕ КЛЮЧИ ОТ ПРОЕКТА lumivo-chat
   const firebaseConfig = {
-    apiKey: "AIzaSyCejK7kea6o-RowFcgL4q90tx8b-MTsUI",
-    authDomain: "lumivo-770c2.firebaseapp.com",
-    projectId: "lumivo-770c2",
-    storageBucket: "lumivo-770c2.firebasestorage.app",
-    messagingSenderId: "266325523216",
-    appId: "1:266325523216:web:8b2fac16a6b6ed83994395"
+    apiKey: "AIzaSyDYkKcQLTGS9CvFtJKtUh350X5aVkFm4U",
+    authDomain: "lumivo-chat.firebaseapp.com",
+    projectId: "lumivo-chat",
+    storageBucket: "lumivo-chat.firebasestorage.app",
+    messagingSenderId: "3138324766083",
+    appId: "1:3138324766083:web:ef08abcb7a036a4b0232b6"
   };
 
   const app = initializeApp(firebaseConfig);
