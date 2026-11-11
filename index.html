@@ -10,6 +10,8 @@
   html, body { height: 100%; height: 100dvh; overflow: hidden; background: #0f172a; }
   body { display: flex; -webkit-font-smoothing: antialiased; }
   .app { width: 100%; height: 100%; display: flex; background: #1e293b; overflow: hidden; position: relative; }
+  
+  /* ЭКРАН ВХОДА */
   #authScreen { position: fixed; inset: 0; background: #0f172a; z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
   #authScreen h1 { color: #3b82f6; font-size: 32px; font-weight: 800; margin-bottom: 30px; letter-spacing: 2px; }
   .auth-box { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -19,53 +21,44 @@
   .auth-box button:hover { background: #2563eb; }
   .auth-switch { text-align: center; color: #94a3b8; font-size: 14px; margin-top: 15px; cursor: pointer; }
   .hidden { display: none !important; }
+
+  /* САЙДБАР */
   .sidebar { position: absolute; inset: 0; display: flex; flex-direction: column; background: #1e293b; z-index: 2; transition: transform 0.25s ease; }
   .sidebar.hidden-mobile { transform: translateX(-100%); pointer-events: none; }
   .sidebar-header { padding: calc(12px + env(safe-area-inset-top)) 16px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; flex-shrink: 0; }
   .sidebar-header h1 { font-size: 20px; color: #3b82f6; font-weight: 700; }
   #newChatBtn { width: 38px; height: 38px; border-radius: 50%; border: none; background: #3b82f6; color: white; font-size: 22px; cursor: pointer; }
-  .tabs { display: flex; border-bottom: 1px solid #334155; flex-shrink: 0; }
-  .tab { flex: 1; padding: 12px; text-align: center; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; }
-  .tab.active { color: #3b82f6; border-bottom: 3px solid #3b82f6; }
-  .tab-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-  .tab-content.hidden { display: none; }
+  
   .search { padding: 10px 16px; flex-shrink: 0; }
   .search input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; outline: none; font-size: 16px; }
   .chat-list { flex: 1; overflow-y: auto; list-style: none; }
   .chat-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #273449; }
   .chat-item:active { background: #273449; }
-  .chat-item.active { background: #334155; border-left: 3px solid #3b82f6; }
   .avatar { width: 46px; height: 46px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; font-size: 16px; }
   .chat-item-info { flex: 1; min-width: 0; }
   .chat-item-info h3 { font-size: 15px; color: #f1f5f9; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .chat-item-info p { font-size: 13px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-item-info p { font-size: 13px; color: #94a3b8; }
+
+  /* ОКНО ЧАТА */
   .chat-area { position: absolute; inset: 0; display: flex; flex-direction: column; background: #0f172a; z-index: 3; transform: translateX(100%); transition: transform 0.25s ease; }
   .chat-area.active { transform: translateX(0); }
   .chat-window { flex: 1; display: flex; flex-direction: column; min-height: 0; height: 100%; }
   .chat-header { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; border-bottom: 1px solid #334155; background: #1e293b; flex-shrink: 0; }
   #backBtn { width: 36px; height: 36px; border: none; background: transparent; color: #3b82f6; font-size: 24px; cursor: pointer; }
-  .chat-header .avatar { width: 40px; height: 40px; }
   .chat-info { flex: 1; min-width: 0; }
   .chat-info h2 { font-size: 16px; color: #f1f5f9; }
-  .chat-info .status { font-size: 12px; color: #22c55e; }
-  .chat-actions { display: flex; gap: 4px; }
-  .action-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; color: #3b82f6; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .action-btn svg { width: 22px; height: 22px; fill: currentColor; }
+  
   .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
   .message { max-width: 78%; padding: 9px 13px; border-radius: 16px; font-size: 15px; line-height: 1.4; color: #f1f5f9; word-wrap: break-word; white-space: pre-wrap; }
   .message.incoming { background: #334155; align-self: flex-start; border-bottom-left-radius: 4px; }
   .message.outgoing { background: #3b82f6; align-self: flex-end; border-bottom-right-radius: 4px; }
   .message-time { font-size: 11px; opacity: 0.7; margin-top: 3px; display: block; text-align: right; }
+  
   .message-form { display: flex; gap: 6px; align-items: center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #334155; background: #1e293b; flex-shrink: 0; }
   .message-form input[type="text"] { flex: 1; min-width: 0; padding: 12px 16px; border-radius: 22px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; outline: none; font-size: 16px; }
   .message-form button[type="submit"] { width: 46px; height: 46px; border: none; border-radius: 50%; background: #3b82f6; color: white; font-size: 18px; cursor: pointer; }
-  @media (min-width: 768px) {
-    body { padding: 20px; align-items: center; justify-content: center; }
-    .app { max-width: 1100px; height: 90vh; border-radius: 16px; }
-    .sidebar { position: relative; width: 320px; flex-shrink: 0; border-right: 1px solid #334155; transform: none !important; pointer-events: auto !important; }
-    .chat-area { position: relative; flex: 1; transform: none !important; }
-    #backBtn { display: none; }
-  }
+
+  /* МОДАЛКА */
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 150; display: none; align-items: flex-end; }
   .modal.active { display: flex; }
   .modal-panel { width: 100%; background: #1e293b; border-radius: 20px 20px 0 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
@@ -96,13 +89,8 @@
       <h1>Lumivo</h1>
       <button id="newChatBtn" title="Новый контакт">+</button>
     </header>
-    <div class="tabs">
-      <button class="tab active">Чаты</button>
-    </div>
-    <div class="tab-content" id="chatsTab">
-      <div class="search"><input type="text" id="searchInput" placeholder="Поиск..."></div>
-      <ul class="chat-list" id="chatList"></ul>
-    </div>
+    <div class="search"><input type="text" id="searchInput" placeholder="Поиск..."></div>
+    <ul class="chat-list" id="chatList"></ul>
   </aside>
 
   <main class="chat-area" id="chatArea">
@@ -112,7 +100,6 @@
         <div class="avatar" id="chatAvatar">?</div>
         <div class="chat-info">
           <h2 id="chatName">Чат</h2>
-          <span class="status" id="chatStatus">в сети</span>
         </div>
       </header>
       <div class="messages" id="messages"></div>
@@ -138,6 +125,7 @@
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
   import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, onSnapshot, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+  // ВСТАВЛЕНЫ КЛЮЧИ ИЗ ТВОЕГО СКРИНШОТА
   const firebaseConfig = {
     apiKey: "AIzaSyCejK7kea6o-RowFcgL4q90tx8b-MTsUI",
     authDomain: "lumivo-770c2.firebaseapp.com",
@@ -341,4 +329,4 @@
   });
 </script>
 </body>
-</html
+</html>
