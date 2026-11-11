@@ -97,7 +97,7 @@
       <button id="newChatBtn" title="Новый контакт">+</button>
     </header>
     <div class="tabs">
-      <button class="tab active" data-tab="chats">Чаты</button>
+      <button class="tab active">Чаты</button>
     </div>
     <div class="tab-content" id="chatsTab">
       <div class="search"><input type="text" id="searchInput" placeholder="Поиск..."></div>
@@ -137,12 +137,11 @@
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
   import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, onSnapshot, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-  // Твои ключи Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCejK7kea6o-RowFcgL4q90tx8b-MTsUI",
-    authDomain: "lumivo-770c2.firebaseapp.com",
-    projectId: "lumivo-770c2",
-    storageBucket: "lumivo-770c2.firebasestorage.app",
+    authDomain: "lumivo-77bc2.firebaseapp.com",
+    projectId: "lumivo-77bc2",
+    storageBucket: "lumivo-77bc2.firebasestorage.app",
     messagingSenderId: "266325523216",
     appId: "1:266325523216:web:8b2fac16a6b6ed83994395"
   };
@@ -156,7 +155,6 @@
   let activeChatId = null;
   let unsubscribeMessages = null;
 
-  // DOM Элементы
   const authScreen = document.getElementById('authScreen');
   const appContainer = document.getElementById('appContainer');
   const authEmail = document.getElementById('authEmail');
@@ -164,7 +162,6 @@
   const authName = document.getElementById('authName');
   const authBtn = document.getElementById('authBtn');
   const authSwitch = document.getElementById('authSwitch');
-  
   const chatListEl = document.getElementById('chatList');
   const messagesEl = document.getElementById('messages');
   const messageFormEl = document.getElementById('messageForm');
@@ -174,7 +171,6 @@
   const chatAreaEl = document.getElementById('chatArea');
   const sidebarEl = document.getElementById('sidebar');
   const backBtn = document.getElementById('backBtn');
-  
   const contactModal = document.getElementById('contactModal');
   const contactEmail = document.getElementById('contactEmail');
   const newChatBtn = document.getElementById('newChatBtn');
@@ -183,7 +179,6 @@
 
   let isLoginMode = true;
 
-  // Переключение режима Вход/Регистрация
   authSwitch.addEventListener('click', () => {
     isLoginMode = !isLoginMode;
     if (isLoginMode) {
@@ -197,28 +192,21 @@
     }
   });
 
-  // Авторизация
   authBtn.addEventListener('click', async () => {
     const email = authEmail.value.trim();
     const pass = authPassword.value.trim();
     const name = authName.value.trim();
-
     if (!email || !pass) return alert('Заполните Email и пароль');
     if (!isLoginMode && !name) return alert('Введите имя');
-
     authBtn.disabled = true;
     authBtn.textContent = 'Загрузка...';
-
     try {
       if (isLoginMode) {
         await signInWithEmailAndPassword(auth, email, pass);
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         await setDoc(doc(db, "users", userCredential.user.uid), {
-          uid: userCredential.user.uid,
-          email: email,
-          name: name,
-          createdAt: new Date().toISOString()
+          uid: userCredential.user.uid, email: email, name: name, createdAt: new Date().toISOString()
         });
       }
     } catch (error) {
@@ -228,16 +216,12 @@
     }
   });
 
-  // Проверка состояния авторизации (запомнить пользователя)
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        currentUserData = docSnap.data();
-      }
-      
+      if (docSnap.exists()) currentUserData = docSnap.data();
       authScreen.classList.add('hidden');
       appContainer.classList.remove('hidden');
       loadChats();
@@ -251,50 +235,30 @@
     }
   });
 
-  // Загрузка чатов
   async function loadChats() {
     if (!currentUser) return;
     const q = query(collection(db, "chats"), where("participants", "array-contains", currentUser.uid));
-    
     onSnapshot(q, (snapshot) => {
       chatListEl.innerHTML = '';
       snapshot.forEach((docSnap) => {
         const chat = docSnap.data();
-        const chatId = docSnap.id;
-        
-        // Находим собеседника (кого нет в списке участников текущего пользователя)
         const otherId = chat.participants.find(id => id !== currentUser.uid);
-        // Временно берем Email как имя (потом можно сделать красивее, запрашивая профиль)
         const otherName = chat.participantNames[otherId] || "Пользователь";
-        
         const li = document.createElement('li');
         li.className = 'chat-item';
-        li.innerHTML = `
-          <div class="avatar">${otherName.charAt(0).toUpperCase()}</div>
-          <div class="chat-item-info">
-            <h3>${otherName}</h3>
-            <p>Нажмите, чтобы открыть</p>
-          </div>
-        `;
-        li.addEventListener('click', () => openChat(chatId, otherName));
+        li.innerHTML = `<div class="avatar">${otherName.charAt(0).toUpperCase()}</div><div class="chat-item-info"><h3>${otherName}</h3><p>Нажмите, чтобы открыть</p></div>`;
+        li.addEventListener('click', () => openChat(docSnap.id, otherName));
         chatListEl.appendChild(li);
       });
     });
   }
 
-  // Открытие чата
   async function openChat(chatId, otherName) {
     activeChatId = chatId;
     chatNameEl.textContent = otherName;
     chatAvatarEl.textContent = otherName.charAt(0).toUpperCase();
-    
-    if (window.innerWidth < 768) {
-      sidebarEl.classList.add('hidden-mobile');
-      chatAreaEl.classList.add('active');
-    }
-
+    if (window.innerWidth < 768) { sidebarEl.classList.add('hidden-mobile'); chatAreaEl.classList.add('active'); }
     if (unsubscribeMessages) unsubscribeMessages();
-
     const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
     unsubscribeMessages = onSnapshot(q, (snapshot) => {
       messagesEl.innerHTML = '';
@@ -303,17 +267,13 @@
         const isMine = msg.senderId === currentUser.uid;
         const div = document.createElement('div');
         div.className = 'message ' + (isMine ? 'outgoing' : 'incoming');
-        div.innerHTML = `
-          ${msg.text}
-          <span class="message-time">${new Date(msg.createdAt).toLocaleTimeString().slice(0,5)}</span>
-        `;
+        div.innerHTML = `${msg.text}<span class="message-time">${new Date(msg.createdAt).toLocaleTimeString().slice(0,5)}</span>`;
         messagesEl.appendChild(div);
       });
       messagesEl.scrollTop = messagesEl.scrollHeight;
     });
   }
 
-  // Кнопка назад
   backBtn.addEventListener('click', () => {
     chatAreaEl.classList.remove('active');
     sidebarEl.classList.remove('hidden-mobile');
@@ -321,102 +281,63 @@
     if (unsubscribeMessages) unsubscribeMessages();
   });
 
-  // Отправка сообщения
   messageFormEl.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = messageInputEl.value.trim();
     if (!text || !activeChatId) return;
-
     messageInputEl.value = '';
-    
     try {
       await addDoc(collection(db, "chats", activeChatId, "messages"), {
-        text: text,
-        senderId: currentUser.uid,
-        createdAt: new Date().toISOString()
+        text: text, senderId: currentUser.uid, createdAt: new Date().toISOString()
       });
-      
-      // Обновляем последнее сообщение в самом чате (для сортировки)
       await setDoc(doc(db, "chats", activeChatId), {
-        lastMessage: text,
-        updatedAt: new Date().toISOString()
+        lastMessage: text, updatedAt: new Date().toISOString()
       }, { merge: true });
-
-    } catch (error) {
-      alert('Ошибка отправки: ' + error.message);
-    }
+    } catch (error) { alert('Ошибка отправки: ' + error.message); }
   });
 
-  // Модалка добавления контакта
   newChatBtn.addEventListener('click', () => contactModal.classList.add('active'));
   cancelContact.addEventListener('click', () => contactModal.classList.remove('active'));
 
-  // Поиск пользователя по Email и создание чата
   saveContact.addEventListener('click', async () => {
     const email = contactEmail.value.trim();
     if (!email) return;
-
     saveContact.disabled = true;
     saveContact.textContent = 'Поиск...';
-
     try {
-      // Ищем пользователя по email
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("email", "==", email));
+      const q = query(collection(db, "users"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        alert('Пользователь с таким Email не найден.');
-        return;
-      }
-
+      if (querySnapshot.empty) { alert('Пользователь с таким Email не найден.'); return; }
       let targetUser = null;
       querySnapshot.forEach((doc) => { targetUser = doc.data(); });
-
-      if (targetUser.uid === currentUser.uid) {
-        alert('Это ваш Email.');
-        return;
-      }
-
-      // Проверяем, есть ли уже чат с этим пользователем
-      const chatsRef = collection(db, "chats");
-      const chatQuery = query(chatsRef, where("participants", "array-contains", currentUser.uid));
+      if (targetUser.uid === currentUser.uid) { alert('Это ваш Email.'); return; }
+      const chatQuery = query(collection(db, "chats"), where("participants", "array-contains", currentUser.uid));
       const chatSnapshot = await getDocs(chatQuery);
-      
       let existingChatId = null;
       chatSnapshot.forEach(doc => {
         const data = doc.data();
         if (data.participants.includes(targetUser.uid)) existingChatId = doc.id;
       });
-
       if (existingChatId) {
         contactModal.classList.remove('active');
         openChat(existingChatId, targetUser.name);
       } else {
-        // Создаем новый чат
         const newChatRef = doc(collection(db, "chats"));
         await setDoc(newChatRef, {
           participants: [currentUser.uid, targetUser.uid],
-          participantNames: {
-            [currentUser.uid]: currentUserData.name,
-            [targetUser.uid]: targetUser.name
-          },
-          lastMessage: "Чат создан",
-          updatedAt: new Date().toISOString()
+          participantNames: { [currentUser.uid]: currentUserData.name, [targetUser.uid]: targetUser.name },
+          lastMessage: "Чат создан", updatedAt: new Date().toISOString()
         });
-
         contactModal.classList.remove('active');
         openChat(newChatRef.id, targetUser.name);
       }
-    } catch (error) {
-      alert('Ошибка: ' + error.message);
-    } finally {
+    } catch (error) { alert('Ошибка: ' + error.message); } 
+    finally {
       saveContact.disabled = false;
       saveContact.textContent = 'Найти';
       contactEmail.value = '';
     }
   });
-
 </script>
 </body>
 </html>
